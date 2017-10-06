@@ -1,0 +1,21 @@
+For this question you must complete the following functions: 
+
+compute_point_cloud.m
+compute_2D_projection.m
+
+First you have to start with 'compute_point_cloud.m'. This function is 
+about the first part of the question 2. 
+
+When you are successfully done with the first part, you may proceed 
+to the second function 'compute_2D_projection.m'.
+
+You may create your own functions and files here too, but please do not
+create any new folders. For grading your assignment, my grader code
+would call these two functions. When you are done completing these two
+functions, you may compress the current folder ('Q2') in '.zip' format ('Q2.zip')
+and submit that to mycourses. Make sure that you remove any extra files or
+images. You do not need to include the images that we have provided you. 
+Those are just for you to test. Also, make sure not to include your pre-computed
+point cloud. I will test your code anyways. Add your movie results 
+as well (e.g. 'XZ.avi', first letter is for rotation, second for translation).
+

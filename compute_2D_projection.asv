@@ -1,0 +1,136 @@
+function [projectedDepthImage,projectedRGBImage]=compute_2D_projection(imageNumber,omegaT,rotationAxis,translationVector)
+
+
+% This function create two images: 1) an image that contains the projected 
+% depth value  (greyscale) and 2) an image that contains the projected 
+% color of the 3D scene point.
+%  
+% INPUTS: 
+% imageNumber: you may check the previous function and see how it has been
+% used.
+%
+% omegaT is a value between 0 to pi/2 make sure not to use degrees!
+%
+% rotationAxis is either 'x' or 'y' or 'z' (you can use strcmp function
+% to find which axis the rotation is about. 
+%
+% translationVector is a 3x1 vector that indicates the translation
+% direction. For this assignment, it should have only 1 non-zero element,
+% which defines the translation direction implicitly (i.e unlike what you 
+% will do for rotation, you do not have to explicitly set a translation
+% direction, the nonzero element will take care of direction and the
+% translation amount).
+%
+% You can read the saved point cloud from the previous function and use
+% that information here. You may also use any other inputs that are
+% provided in the assignment description.
+% 
+% OUTPUTS:
+% projectedDepthImage: an image that contains the projected depth
+% value (greyscale)
+% 
+% projectedRGBImage: an image that contains the projected color of the 3D 
+% scene point.
+
+
+
+
+
+%%% YOUR IMPLEMENTATION GOES HERE:
+
+% You have to compute the following images
+
+% Pre-defined Step
+translation_total = 2000;
+steps = 100;
+if(omegaT > pi/2 || omegaT < 0)
+    disp('omegaT is a value between 0 to pi/2')
+    return
+end
+omega_t = omegaT/steps;
+translation_t = translation_total/steps;
+% Pre-defined Translation Vector Filter Vector:
+
+trans_x = [1,0,0]';
+trans_y = [0,1,0]';
+trans_z = [0,0,1]';
+
+rotation_axis = [0,0,0];
+translation_axis = [0,0,0];
+% rotation axis detection
+if(strcmp(rotationAxis,'x'))
+    disp('rotation along axis: x')
+    rotation_axis = [1,0,0];
+elseif(strcmp(rotationAxis,'y'))
+    disp('rotation along axis: y')
+    rotation_axis = [0,1,0];
+elseif(strcmp(rotationAxis,'z'))
+    disp('rotation along axis: z')
+    rotation_axis = [0,0,1];
+else
+    disp('Not Accepted Parameter: please input x, y, or z')
+    return
+end
+% translation axis detection
+if(translationVector*trans_x == 1)
+    disp('translation along axis: x')
+    translation_axis = [1,0,0];
+elseif(translationVector*trans_y == 1)
+    disp('translation along axis: y')
+    translation_axis = [0,1,0];
+elseif(translationVector*trans_z == 1)
+    disp('translation along axis: z')
+    translation_axis = [0,0,1];
+else
+    disp('Not Accepted Parameter: please input [0,0,1] , [0,1,0] or [1,0,0]')
+    return
+end
+
+
+
+
+
+addpath(num2str(imageNumber));
+rgbImageFileName = strcat('rgbImage_',num2str(imageNumber),'.jpg');
+depthImageFileName = strcat('depthImage_',num2str(imageNumber),'.png');
+extrinsicFileName = strcat('extrinsic_',num2str(imageNumber),'.txt');
+intrinsicsFileName = strcat('intrinsics_',num2str(imageNumber),'.txt');
+
+rgbImage = imread(rgbImageFileName);
+depthImage = imread(depthImageFileName);
+extrinsic_matrix = load(extrinsicFileName);
+intrinsics_matrix = load(intrinsicsFileName);
+
+width = size(depthImage,2);
+height = size(depthImage,1);
+
+data = load('pointCloudImage_3.mat');
+res = data.res;
+
+X = res(:,1);
+Y = res(:,2);
+Z = res(:,3);
+
+X = reshape(X, size(depthImage,1),[]);
+Y = reshape(Y, size(depthImage,1),[]);
+Z = reshape(Z, size(depthImage,1),[]);
+
+Surface=surf(X,Y,Z,'edgecolor','none','facecolor','interp');
+lighting gouraud
+camlight
+colormap(repmat(spring,20,1))
+axis image
+axis vis3d
+xlabel('X axis')
+ylabel('Y axis')
+zlabel('Z axis')
+
+
+
+
+
+projectedDepthImage = [];
+projectedRGBImage = [];
+
+
+end
